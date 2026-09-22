@@ -1,9 +1,9 @@
-fastapi>=0.112.0
-uvicorn>=0.30.0
-pandas>=2.2.0
-langchain-core
+fastapi
+uvicorn
+pandas
 langchain-google-genai
 langgraph
-pydantic>=2.8.0
-python-dotenv>=1.0.0
-python-multipart-0.0.32
+langchain-core
+pydantic
+python-dotenv
+python-multipart
