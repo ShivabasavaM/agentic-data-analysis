@@ -1,8 +1,8 @@
 import shutil
-import traceback
 import uuid
 import os
 import re
+import traceback
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from pydantic import BaseModel
 from app.agent.graph import graph
@@ -15,7 +15,7 @@ class QueryRequest(BaseModel):
     file_id: str = "default"
     thread_id: str = "default_thread"
 
-MAX_FILE_SIZE = 5 * 1024 * 1024  
+MAX_FILE_SIZE = 5 * 1024 * 1024  # 5 MB limit
 
 @router.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
@@ -27,7 +27,7 @@ async def upload_file(file: UploadFile = File(...)):
     file.file.seek(0, os.SEEK_END)
     if file.file.tell() > MAX_FILE_SIZE:
         raise HTTPException(status_code=413, detail="File too large. Maximum size is 5MB.")
-    file.file.seek(0) 
+    file.file.seek(0) # Reset cursor after checking size
     
     # 3. Generate strict UUID (Fixes Path Traversal)
     file_id = str(uuid.uuid4())
@@ -64,10 +64,14 @@ async def chat(request: QueryRequest):
             content = str(content)
             
         operations_trace = []
-        for msg in result["messages"]:
+        # Iterate backwards through history to only grab tools used for the current question
+        for msg in reversed(result["messages"]):
+            if msg.type == 'human' or type(msg).__name__ == "HumanMessage":
+                break
+            
             if hasattr(msg, 'tool_calls') and msg.tool_calls:
                 for tc in msg.tool_calls:
-                    operations_trace.append({"tool": tc['name'], "arguments": tc['args']})
+                    operations_trace.insert(0, {"tool": tc['name'], "arguments": tc['args']})
 
         if not content and operations_trace:
             content = f"Tool executed successfully, but no summary text was returned."
@@ -77,7 +81,7 @@ async def chat(request: QueryRequest):
     except Exception as e:
         error_msg = str(e)
         
-        # 1. Handle Upstream LLM API Failures (Model not found, Quota Exceeded)
+        # 1. Handle Upstream LLM API Failures
         if "404" in error_msg or "NOT_FOUND" in error_msg:
             raise HTTPException(status_code=503, detail="AI Service Error: The specified model is currently unavailable or misconfigured.")
         elif "429" in error_msg or "quota" in error_msg.lower():
@@ -89,5 +93,5 @@ async def chat(request: QueryRequest):
             
         # 3. Fallback for unhandled internal crashes
         else:
-            print(f"Backend Crash Log:\n{traceback.format_exc()}") # Logs securely to terminal
+            print(f"Backend Crash Log:\n{traceback.format_exc()}")
             raise HTTPException(status_code=500, detail="Internal Server Error: The analysis engine encountered an unexpected failure.")
