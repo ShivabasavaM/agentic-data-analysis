@@ -107,7 +107,7 @@ function App() {
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ background: '#fff', padding: '30px', borderRadius: '8px', maxWidth: '550px', boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}>
             <h2 style={{ color: '#5a287d', marginTop: 0 }}>Project 4 - Agentic Data Analysis with Tool Selection and Guardrails</h2>
-            <p>Welcome! This is a production-ready GenAI data-analysis agent built for the NatWest Principal Engineer assessment.</p>
+            <p>Welcome! This is a GenAI data-analysis agent built for the NatWest Principal Engineer assessment.</p>
             <ul style={{ lineHeight: '1.6' }}>
               <li><strong>Strict Guardrails:</strong> The LLM translates natural language into a JSON plan. It <em>never</em> computes math directly.</li>
               <li><strong>Deterministic Execution:</strong> All aggregations and filters are executed strictly in Python (Pandas).</li>
@@ -119,7 +119,7 @@ function App() {
             </div>
 
             <p style={{ fontSize: '14px' }}>
-              <strong>Source Code:</strong> <a href="YOUR_GITHUB_LINK_HERE" target="_blank" rel="noopener noreferrer" style={{ color: '#5a287d' }}>View complete details on GitHub</a>
+              <strong>Source Code:</strong> <a href="https://github.com/ShivabasavaM/agentic-data-analysis" target="_blank" rel="noopener noreferrer" style={{ color: '#5a287d' }}>View complete details on GitHub</a>
             </p>
 
             <button onClick={() => setShowIntro(false)} style={{ width: '100%', padding: '12px', background: '#5a287d', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold', marginTop: '10px' }}>
