@@ -91,12 +91,15 @@ function App() {
     setLoading(true);
 
     try {
-      const res = await fetch('http://localhost:8000/api/chat', { 
+      // ADD THIS LINE to grab the variable inside handleAsk
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      
+      // UPDATE THIS FETCH to use the backticks and apiUrl
+      const res = await fetch(`${apiUrl}/api/chat`, { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           query: userMsg, 
-          // FIX: Pass the actual UUID if custom, otherwise 'default'
           file_id: dataSource === 'default' ? 'default' : uploadedFileId 
         })
       });
