@@ -19,7 +19,7 @@ class DataOpInput(BaseModel):
     filters: Optional[List[FilterDef]] = Field(None, description="Filters to apply before aggregation.")
     group_by: Optional[str] = Field(None, description="Column to group by, if any.")
     agg_column: Optional[str] = Field(None, description="Column to perform arithmetic on. Leave empty if agg_op is 'count'.")
-    agg_op: Optional[str] = Field(None, description="Arithmetic operation (sum, mean, count, min, max).")
+    agg_op: Optional[str] = Field(None, description="Arithmetic operation (sum, mean, median, count, min, max).")
 
 @tool("execute_data_operation", args_schema=DataOpInput)
 def execute_data_operation(
@@ -37,8 +37,9 @@ def execute_data_operation(
             return "Execution Error: Invalid file_id format. Access denied."
             
         safe_file_id = os.path.basename(file_id)
-        file_path = "app/data/project_2.csv" if safe_file_id == "default" else f"app/data/{safe_file_id}.csv"
-        
+        # Dynamically resolve absolute path to the data folder
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        file_path = os.path.join(base_dir, "data", "project_2.csv") if safe_file_id == "default" else os.path.join(base_dir, "data", f"{safe_file_id}.csv")
         if not os.path.exists(file_path):
             return f"Execution Error: Dataset not found."
 

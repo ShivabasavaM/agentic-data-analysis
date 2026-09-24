@@ -29,7 +29,8 @@ llm_with_tools = llm.bind_tools(tools)
 # 2. Dynamic Schema Loader
 def get_dynamic_schema(file_id: str) -> List[str]:
     safe_file_id = os.path.basename(file_id)
-    file_path = "app/data/project_2.csv" if safe_file_id == "default" else f"app/data/{safe_file_id}.csv"
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    file_path = os.path.join(base_dir, "data", "project_2.csv") if safe_file_id == "default" else os.path.join(base_dir, "data", f"{safe_file_id}.csv")
     try:
         df = pd.read_csv(file_path, nrows=0)
         cols = df.columns.tolist()

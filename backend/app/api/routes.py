@@ -30,8 +30,10 @@ async def upload_file(file: UploadFile = File(...)):
     file.file.seek(0) # Reset cursor after checking size
     
     # 3. Generate strict UUID (Fixes Path Traversal)
+    # 3. Generate strict UUID (Fixes Path Traversal)
     file_id = str(uuid.uuid4())
-    file_path = f"app/data/{file_id}.csv"
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    file_path = os.path.join(base_dir, "data", f"{file_id}.csv")
     
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
